@@ -14,12 +14,16 @@ public class TTRMain {
 		myGame.setFramesPerSecond(60);
 		
 		/* Initialize two players. This can be any combination of human players or AI players */
-		Player player1 = new HumanPlayer("Human Player");
-		Player player2 = new StupidPlayer("Stupid Player");
+		Player player1 = new StupidPlayer("Human Player", 0.9f);
+		Player player2 = new StupidPlayer("Stupid Player", 0.5f);
 		
 		/* Setup the scene, and get the game started */
 		TTRGamePlayScene scene = new TTRGamePlayScene("Ticket To Ride", "woodBacking.jpg", myGame, player1, player2);
 		myGame.setCurrentScene(scene);
+		
+		scene.setScaleX(0.8);
+		scene.setScaleY(0.8);
+		
 		player1.setScene(scene);
 		player2.setScene(scene);
 		myGame.start();

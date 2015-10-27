@@ -69,6 +69,7 @@ public class TTRGamePlayScene extends GameScene implements IEventListener{
 		
 		/* Init and place the deck of destination tickets */
 		destTicketDeck = new DestinationTicketDeckView();
+
 		destTicketDeck.setLocation(new Point(20,this.getUnscaledHeight()-destTicketDeck.getUnscaledHeight()-50));
 		this.addChild(destTicketDeck);
 		
