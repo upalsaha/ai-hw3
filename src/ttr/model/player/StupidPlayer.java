@@ -129,7 +129,7 @@ public class StupidPlayer extends Player{
 		
 		
 		
-		if(randomInt > 100*p && choices.toArray().length >= 10){
+		if(randomInt > 100*p && choices.toArray().length >= 4){
 
 			int another  =  randomGenerator.nextInt(choices.toArray().length);
 			Route same = choices.get(another);

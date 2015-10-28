@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import ttr.model.destinationCards.Destination;
+import ttr.model.destinationCards.DestinationTicket;
 import ttr.model.destinationCards.Route;
 import ttr.model.destinationCards.Routes;
 import ttr.model.trainCards.TrainCard;
@@ -72,6 +73,8 @@ public class Guwop extends Player{
 			//System.out.println(q.size());
 			int alternative_path = 0;
 			for( Destination neighbor: this.map.getNeighbors(min_key) ){
+				
+			
 				alternative_path = dist.get(min_key) + 1;
 				if(alternative_path < dist.get(neighbor) ){
 					dist.replace(neighbor, alternative_path);
@@ -109,13 +112,10 @@ public class Guwop extends Player{
 		this.p = p;
 		this.turn = 0;
 		
-		ArrayList<Destination> path = new ArrayList<Destination>();
-		System.out.println("dijstras started");
-		path = this.dijkstras(Destination.Vancouver, Destination.Miami);
-		System.out.println("dijstras finished");
-		for(Destination city: path){
-		System.out.println(city.toString());
-		}
+		
+		
+		
+		
 		
 		
 	}
@@ -124,12 +124,32 @@ public class Guwop extends Player{
 	}
 	
 	
+	public ArrayList<Route> getAlongDijkstra(){
+		
+		ArrayList<Route> master = new ArrayList<Route>();
+		
+		for( DestinationTicket d :this.getDestinationTickets()){
+			
+			ArrayList<Destination> path = new ArrayList<Destination>();
+			ArrayList<Route> route_path = new ArrayList<Route>();
+			path = this.dijkstras(d.getTo(), d.getFrom());
+			for(int i=0;i<path.toArray().length-1;i+=1){
+				for( Route alongside :this.map.getRoutes(path.get(i), path.get(i+1))){
+					route_path.add(alongside);
+					master.add(alongside);
+				}
+			}			
+		}
+		return master;
+	}
 	
 	public ArrayList<Route> getAvailableRoutes(boolean withRainbow){
 		
 		ArrayList<Route> returnThis = new ArrayList<Route>();
-		
+		ArrayList<Route> dijk = new ArrayList<Route>();
+		dijk = getAlongDijkstra();
 		int max_color = 0;	
+		
 		this.t = TrainCardColor.rainbow;
 		for( TrainCardColor color: TrainCardColor.values() ){
 			
@@ -155,7 +175,7 @@ public class Guwop extends Player{
 					//if(r.getColor().equals(t)){
 						//System.out.println("HELLO THERE! :"); 
 						//if( r.getCost() <= max_color ){
-						if(r.getCost() <= this.getNumTrainCardsByColor(r.getColor()) || (r.getColor().equals(TrainCardColor.rainbow) && max_color>=r.getCost() ) ){
+						if(r.getCost() <= this.getNumTrainCardsByColor(r.getColor())+this.getNumTrainCardsByColor(TrainCardColor.rainbow) || (r.getColor().equals(TrainCardColor.rainbow) && max_color>=r.getCost() ) ){
 							
 							boolean flag = true;
 							for (Route r_in: returnThis){
@@ -168,7 +188,18 @@ public class Guwop extends Player{
 							}
 							
 							if(flag){
-								returnThis.add(r);
+								
+							
+								if(dijk.contains(r)   ){
+									
+								
+									returnThis.add(r);
+								}
+								
+
+								
+								
+								
 							}
 						}
 					
@@ -189,14 +220,33 @@ public class Guwop extends Player{
 	@Override
 	public void makeMove(){
 		this.turn += 1;
+		if (this.turn ==1){
+			ArrayList<Route> path = new ArrayList<Route>();
+			System.out.println("dijstras started");
+			path = this.getAlongDijkstra();
+			
+			System.out.println("dijstras finished");
+			for(Route city: path){
+			System.out.println(city.toString());
+			}
+			this.drawDestinationTickets();
+			
+		}
+		if(this.turn==40){
+			//this.drawDestinationTickets();
+			this.p = 0.2f;
+
+			
+		}
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(101);
 		ArrayList<Route> choices = new ArrayList<Route>();
 		
 		choices = getAvailableRoutes(false);
-		/*for(Route r: choices){
+		//choices = getAlongDijkstra();
+		for(Route r: choices){
 			System.out.println(r.getDest1() + "<->"+r.getDest2()+":   "+r.getColor()  + "   /"+this.getNumTrainCardsByColor(r.getColor()));
-		}*/
+		}
 		//System.out.println(choices.toArray().length );
 		
 		//this.map.getNeighbors(city)
@@ -210,7 +260,7 @@ public class Guwop extends Player{
 		
 		Route r5 = new Route(Destination.Dallas , Destination.Houston, 1, TrainCardColor.rainbow);
 		
-		if(turn < 8){
+		if(turn < 10){
 			if(! this.map.isRouteClaimed(r1)){
 				choices.add(r1);}
 
@@ -229,7 +279,7 @@ public class Guwop extends Player{
 		}
 		
 		
-		if(randomInt > 100*p && choices.toArray().length >= 4){
+		if(randomInt > 100*p && choices.toArray().length >= 1){
 
 			int another  =  randomGenerator.nextInt(choices.toArray().length);
 			Route same = choices.get(another);
