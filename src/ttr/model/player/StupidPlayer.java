@@ -33,7 +33,7 @@ public class StupidPlayer extends Player{
 		this.turn = 0;
 		for ( Route r: this.map.getAllRoutes()){
 			
-			System.out.println( r.toString() );
+			//System.out.println( r.toString() );
 			
 		}
 	}

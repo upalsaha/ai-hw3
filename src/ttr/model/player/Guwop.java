@@ -23,31 +23,10 @@ public class Guwop extends Player{
 	private TrainCardColor t;
 	private int turn;
 	
-	
-	/**
-	 * Need to have this constructor so the player has a name, you can use no parameters and pass the name of your player
-	 * to the super constructor, or just take in the name as a parameter. Both options are shown here.
-	 * */
-	public Guwop(String name, float p) {
-		super(name);
-		this.inNeed = new ArrayList<TrainCardColor>();
-		this.map = new Routes().getInstance();
-		this.p = p;
-		this.turn = 0;
-		for ( Route r: this.map.getAllRoutes()){
-			
-			System.out.println( r.toString() );
-			
-		}
-	}
-	public Guwop(){
-		super("Guwop Player");
-	}
-	
-	
-	public ArrayList<Route> dijkstras(Destination start, Destination dest){
+
+	public ArrayList<Destination> dijkstras(Destination start, Destination dest){
 		
-		ArrayList<Route> path = new ArrayList<Route>();
+		ArrayList<Destination> path = new ArrayList<Destination>();
 		
 		ArrayList<Destination> q = new ArrayList<Destination>();
 		
@@ -64,52 +43,87 @@ public class Guwop extends Player{
 		}
 		dist.put(start, 0);
 		
+		boolean flag = false;
+
+		Destination min_key = null;
 		
 		while(! q.isEmpty() ){
 			
-			
-			Destination min_key = null;
 			int current = 1000000;
-			for(Destination keys: dist.keySet()){
+			for(Destination keys: q){
 				if(dist.get(keys)  < current ){
 					current  = dist.get(keys);
 					min_key = keys;
 				}
 			}
+			if(min_key.equals(dest)){
+				flag =  true;
+				break;
+			}
+
+			//System.out.println(min_key);
 			
+			//System.out.println(q.size());
+			//System.out.println(q.contains(min_key));
+			
+			//System.out.println(q);			
 			q.remove(min_key);
-			
+
+			//System.out.println(q.size());
 			int alternative_path = 0;
 			for( Destination neighbor: this.map.getNeighbors(min_key) ){
-				
 				alternative_path = dist.get(min_key) + 1;
 				if(alternative_path < dist.get(neighbor) ){
-					
 					dist.replace(neighbor, alternative_path);
 					prev.replace(neighbor, min_key);
-					
 				}
-				
 			}
+		}
+		
+		if(flag){
 			
-			
-			
+			Destination u = dest;
+			while( prev.get(u)!=null ){
+				
+				path.add(0, u);
+				u = prev.get(u);
+			}
+			path.add(0,u);
+			return path;
 			
 			
 		}
+		else{
+
+			return path;
+		}
+	}
+	/**
+	 * Need to have this constructor so the player has a name, you can use no parameters and pass the name of your player
+	 * to the super constructor, or just take in the name as a parameter. Both options are shown here.
+	 * */
+	public Guwop(String name, float p) {
+		super(name);
+		this.inNeed = new ArrayList<TrainCardColor>();
+		this.map = new Routes().getInstance();
+		this.p = p;
+		this.turn = 0;
 		
-		
-		
-		
-		this.map.getNeighbors(start);
-		
-		
-		
-		
-		return path;
+		ArrayList<Destination> path = new ArrayList<Destination>();
+		System.out.println("dijstras started");
+		path = this.dijkstras(Destination.Vancouver, Destination.Miami);
+		System.out.println("dijstras finished");
+		for(Destination city: path){
+		System.out.println(city.toString());
+		}
 		
 		
 	}
+	public Guwop(){
+		super("Guwop Player");
+	}
+	
+	
 	
 	public ArrayList<Route> getAvailableRoutes(boolean withRainbow){
 		
