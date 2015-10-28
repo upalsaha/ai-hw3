@@ -15,10 +15,10 @@ import ttr.model.trainCards.TrainCardColor;
 public class StupidPlayer extends Player{
 	
 	private Routes map;
-	private ArrayList<TrainCardColor> inNeed;
+	private ArrayList<TrainCardColor> inNeed;//colors we want
 	private float p;
-	
-	
+	private TrainCardColor t;
+	private int turn;
 	
 	
 	/**
@@ -30,7 +30,12 @@ public class StupidPlayer extends Player{
 		this.inNeed = new ArrayList<TrainCardColor>();
 		this.map = new Routes().getInstance();
 		this.p = p;
-		
+		this.turn = 0;
+		for ( Route r: this.map.getAllRoutes()){
+			
+			System.out.println( r.toString() );
+			
+		}
 	}
 	public StupidPlayer(){
 		super("Stupid Player");
@@ -41,13 +46,13 @@ public class StupidPlayer extends Player{
 		ArrayList<Route> returnThis = new ArrayList<Route>();
 		
 		int max_color = 0;	
-		TrainCardColor t = TrainCardColor.rainbow;
+		this.t = TrainCardColor.rainbow;
 		for( TrainCardColor color: TrainCardColor.values() ){
 			
 			if(this.getNumTrainCardsByColor(color)>max_color){
 
 				max_color = this.getNumTrainCardsByColor(color);
-				t = color;
+				this.t = color;
 			}
 		}
 		//System.out.println(t.toString());
@@ -66,7 +71,7 @@ public class StupidPlayer extends Player{
 					//if(r.getColor().equals(t)){
 						//System.out.println("HELLO THERE! :"); 
 						//if( r.getCost() <= max_color ){
-						if(r.getCost() <= this.getNumTrainCardsByColor(r.getColor()) ){
+						if(r.getCost() <= this.getNumTrainCardsByColor(r.getColor()) || (r.getColor().equals(TrainCardColor.rainbow) && max_color>=r.getCost() ) ){
 							
 							boolean flag = true;
 							for (Route r_in: returnThis){
@@ -99,26 +104,53 @@ public class StupidPlayer extends Player{
 	 * */
 	@Override
 	public void makeMove(){
-		
+		this.turn += 1;
 		Random randomGenerator = new Random();
 		int randomInt = randomGenerator.nextInt(101);
 		ArrayList<Route> choices = new ArrayList<Route>();
+		
 		choices = getAvailableRoutes(false);
-		for(Route r: choices){
+		/*for(Route r: choices){
 			System.out.println(r.getDest1() + "<->"+r.getDest2()+":   "+r.getColor()  + "   /"+this.getNumTrainCardsByColor(r.getColor()));
-		}
+		}*/
 		//System.out.println(choices.toArray().length );
 		
+		//this.map.getNeighbors(city)
+		
+		Route r1 = new Route(Destination.LosAngeles , Destination.Phoenix, 3, TrainCardColor.rainbow);
+		Route r2 = new Route(Destination.Nashville , Destination.Atlanta, 1, TrainCardColor.rainbow);
+		
+		Route r3 = new Route(Destination.Houston , Destination.NewOrleans, 2, TrainCardColor.rainbow);
+		
+		Route r4 = new Route(Destination.Seattle , Destination.Portland, 1, TrainCardColor.rainbow);
+		
+		Route r5 = new Route(Destination.Dallas , Destination.Houston, 1, TrainCardColor.rainbow);
 		
 		
 		
 		
-		if(randomInt > 100*p && choices.toArray().length >= 4){
+		if(randomInt > 100*p && choices.toArray().length >= 10){
 
 			int another  =  randomGenerator.nextInt(choices.toArray().length);
-					
-			super.claimRoute(choices.get(another), choices.get(another).getColor());
+			Route same = choices.get(another);
+			Route switched  = new Route(same.getDest2(), same.getDest1(), same.getCost(), same.getColor());
 			
+			System.out.println("trains left:  "+this.getNumTrainPieces());
+			
+			
+			
+			if(same.getColor().equals(TrainCardColor.rainbow)){
+				
+				super.claimRoute(switched, this.t );
+
+				
+			}
+			else{
+				
+				super.claimRoute(switched, choices.get(another).getColor());
+
+			}
+						
 		}
 		else{
 			super.drawTrainCard(0);

@@ -1,6 +1,7 @@
 package ttr.main;
 
 import ttr.model.player.HumanPlayer;
+import ttr.model.player.*;
 import ttr.model.player.Player;
 import ttr.model.player.StupidPlayer;
 import ttr.view.scenes.TTRGamePlayScene;
@@ -14,8 +15,8 @@ public class TTRMain {
 		myGame.setFramesPerSecond(60);
 		
 		/* Initialize two players. This can be any combination of human players or AI players */
-		Player player1 = new StupidPlayer("Human Player", 0.9f);
-		Player player2 = new StupidPlayer("Stupid Player", 0.5f);
+		Player player1 = new StupidPlayer("Stupid HUman Player", 0.9f);
+		Player player2 = new Guwop("Guwop Player", 0.6f);
 		
 		/* Setup the scene, and get the game started */
 		TTRGamePlayScene scene = new TTRGamePlayScene("Ticket To Ride", "woodBacking.jpg", myGame, player1, player2);
