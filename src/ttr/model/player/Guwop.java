@@ -79,6 +79,18 @@ public class Guwop extends Player{
 			
 			q.remove(min_key);
 			
+			int alternative_path = 0;
+			for( Destination neighbor: this.map.getNeighbors(min_key) ){
+				
+				alternative_path = dist.get(min_key) + 1;
+				if(alternative_path < dist.get(neighbor) ){
+					
+					dist.replace(neighbor, alternative_path);
+					prev.replace(neighbor, min_key);
+					
+				}
+				
+			}
 			
 			
 			
