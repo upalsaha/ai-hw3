@@ -75,7 +75,7 @@ public class Guwop extends Player{
 			for( Destination neighbor: this.map.getNeighbors(min_key) ){
 				
 			
-				alternative_path = dist.get(min_key) + 1;
+				alternative_path = dist.get(min_key) + this.map.shortestPathcost(neighbor, min_key);
 				if(alternative_path < dist.get(neighbor) ){
 					dist.replace(neighbor, alternative_path);
 					prev.replace(neighbor, min_key);
@@ -105,22 +105,13 @@ public class Guwop extends Player{
 	 * Need to have this constructor so the player has a name, you can use no parameters and pass the name of your player
 	 * to the super constructor, or just take in the name as a parameter. Both options are shown here.
 	 * */
-	public Guwop(String name, float p) {
-		super(name);
-		this.inNeed = new ArrayList<TrainCardColor>();
-		this.map = new Routes().getInstance();
-		this.p = p;
-		this.turn = 0;
-		
-		
-		
-		
-		
-		
-		
-	}
+	
 	public Guwop(){
 		super("Guwop Player");
+		this.inNeed = new ArrayList<TrainCardColor>();
+		this.map = new Routes().getInstance();
+		this.p = 0.5f;
+		this.turn = 0;
 	}
 	
 	
@@ -177,6 +168,8 @@ public class Guwop extends Player{
 						//if( r.getCost() <= max_color ){
 						if(r.getCost() <= this.getNumTrainCardsByColor(r.getColor())+this.getNumTrainCardsByColor(TrainCardColor.rainbow) || (r.getColor().equals(TrainCardColor.rainbow) && max_color>=r.getCost() ) ){
 							
+							
+							
 							boolean flag = true;
 							for (Route r_in: returnThis){
 								
@@ -190,23 +183,26 @@ public class Guwop extends Player{
 							if(flag){
 								
 							
-								if(dijk.contains(r)   ){
+								if(dijk.contains(r) || (this.turn > 60 && r.getPoints()>=5 && this.getDestinationTickets().toArray().length <= 3 ) ){
 									
 								
 									returnThis.add(r);
 								}
-								
-
-								
-								
-								
 							}
+							
+							
 						}
 					
 					
 				}
 			}
+			if(returnThis.isEmpty()){
+				
+				
+				
+			}
 			return returnThis;
+			
 		}
 		else{
 			return returnThis;
@@ -228,14 +224,14 @@ public class Guwop extends Player{
 			System.out.println("dijstras finished");
 			for(Route city: path){
 			System.out.println(city.toString());
+			//this.drawDestinationTickets();
 			}
-			this.drawDestinationTickets();
 			
 		}
-		if(this.turn==40){
-			//this.drawDestinationTickets();
-			this.p = 0.2f;
+		if (this.turn == 19 ){
+			
 
+			this.p = 0.0f;
 			
 		}
 		Random randomGenerator = new Random();
@@ -260,7 +256,8 @@ public class Guwop extends Player{
 		
 		Route r5 = new Route(Destination.Dallas , Destination.Houston, 1, TrainCardColor.rainbow);
 		
-		if(turn < 10){
+		if(turn < 24){
+			choices = new ArrayList<Route>();
 			if(! this.map.isRouteClaimed(r1)){
 				choices.add(r1);}
 
