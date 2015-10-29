@@ -106,8 +106,8 @@ public class Guwop extends Player{
 	 * to the super constructor, or just take in the name as a parameter. Both options are shown here.
 	 * */
 	
-	public Guwop(){
-		super("Guwop Player");
+	public Guwop(String name){
+		super(name);
 		this.inNeed = new ArrayList<TrainCardColor>();
 		this.map = new Routes().getInstance();
 		this.p = 0.5f;
