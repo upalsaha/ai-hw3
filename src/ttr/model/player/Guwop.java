@@ -228,7 +228,7 @@ public class Guwop extends Player{
 			}
 			
 		}
-		if (this.turn == 19 ){
+		if (this.turn > 24 ){
 			
 
 			this.p = 0.0f;
@@ -256,7 +256,7 @@ public class Guwop extends Player{
 		
 		Route r5 = new Route(Destination.Dallas , Destination.Houston, 1, TrainCardColor.rainbow);
 		
-		if(turn < 24){
+		if(turn < 14){
 			choices = new ArrayList<Route>();
 			if(! this.map.isRouteClaimed(r1)){
 				choices.add(r1);}

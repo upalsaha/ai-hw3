@@ -16,7 +16,7 @@ public class TTRMain {
 		
 		/* Initialize two players. This can be any combination of human players or AI players */
 		//Player player1 = new StupidPlayer("Stupid  Player", 0.0f);
-		Player player1 = new Guwop("guqwop1");
+		Player player1 = new StupidPlayer("stupid_playeer", 0.0f);
 		Player player2 = new Guwop("gieiow2");
 		
 		/* Setup the scene, and get the game started */
